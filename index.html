@@ -1240,6 +1240,8 @@ width:min(350px,88vw);
 <div id="ending">
 
     <div id="endingBox">
+        
+        <div id="endingNumber"></div>
 
         <h1 id="endingTitle">
             Конец
@@ -1276,6 +1278,16 @@ width:min(350px,88vw);
 <audio id="scaryMusic" preload="auto">
     <source src="./scary.mp3" type="audio/mpeg">
 </audio>
+<audio id="clickSound" src="./click.mp3"></audio>
+<audio id="peepholeSound" src="./peephole.mp3"></audio>
+<audio id="phoneSound" src="./phone.mp3"></audio>
+<audio id="callSound" src="./call.mp3"></audio>
+<audio id="waitSound" src="./wait.mp3"></audio>
+<audio id="searchSound" src="./search.mp3"></audio>
+<audio id="doorOpenSound" src="./door_open.mp3"></audio>
+<audio id="noteSound" src="./note.mp3"></audio>
+<audio id="closeSound" src="./close.mp3"></audio>
+<audio id="endingSound" src="./ending.mp3"></audio>    
 
 </div>
 
@@ -1344,6 +1356,8 @@ const ending =
 
 const endingTitle =
     document.getElementById("endingTitle");
+const endingNumber =
+    document.getElementById("endingNumber");
 
 const endingText =
     document.getElementById("endingText");
@@ -1353,6 +1367,27 @@ const backgroundMusic =
 
 const scaryMusic =
 document.getElementById("scaryMusic");
+    const clickSound = document.getElementById("clickSound");
+const peepholeSound = document.getElementById("peepholeSound");
+const phoneSound = document.getElementById("phoneSound");
+const callSound = document.getElementById("callSound");
+const waitSound = document.getElementById("waitSound");
+const searchSound = document.getElementById("searchSound");
+const doorOpenSound = document.getElementById("doorOpenSound");
+const noteSound = document.getElementById("noteSound");
+const closeSound = document.getElementById("closeSound");
+const endingSound = document.getElementById("endingSound");
+
+function playSound(sound){
+
+    sound.currentTime = 0;
+    sound.volume = 0.7;
+
+    sound.play().catch(function(error){
+        console.log("Звук не запустился:", error);
+    });
+
+}
 
 
 
@@ -1774,7 +1809,7 @@ const peepholeEvents = [
 document
 .getElementById("peepholeButton")
 .addEventListener("click",function(){
-
+    playSound(peepholeSound);
     if(state.gameOver){
         return;
     }
@@ -1843,7 +1878,7 @@ peepholeOverlay.style.display =
 document
 .getElementById("phoneButton")
 .addEventListener("click",function(){
-
+    playSound(phoneSound);
     if(state.gameOver){
         return;
     }
@@ -1999,7 +2034,7 @@ document
 document
 .getElementById("searchButton")
 .addEventListener("click",function(){
-
+    playSound(searchSound);
     if(state.gameOver){
         return;
     }
@@ -2023,6 +2058,7 @@ document
     }
 
     else if(state.searches === 2){
+        playSound(noteSound);
 
         state.hasNote = true;
 
@@ -2139,6 +2175,7 @@ document
 document
 .getElementById("openButton")
 .addEventListener("click",function(){
+    playSound(doorOpenSound);
 
     if(state.gameOver){
         return;
@@ -2170,13 +2207,15 @@ document
     if(state.elapsedMinutes < 60){
 
         showEnding(
-            "СЛИШКОМ РАНО",
+    1,
+    "ПЛОХАЯ",
+    "СЛИШКОМ РАНО",
 
-            "Ты резко открыл дверь. " +
-            "Коридор был пуст. " +
-            "Ты уже хотел закрыть её, " +
-            "но из темноты кто-то тихо произнёс твоё имя."
-        );
+    "Ты резко открыл дверь. " +
+    "Коридор был пуст. " +
+    "Ты уже хотел закрыть её, " +
+    "но из темноты кто-то тихо произнёс твоё имя."
+);
 
         return;
 
@@ -2185,12 +2224,14 @@ document
     if(state.fear >= 60){
 
         showEnding(
-            "ТЫ НЕ ДОЛЖЕН БЫЛ ЭТО ДЕЛАТЬ",
+    2,
+    "ПЛОХАЯ",
+    "ТЫ НЕ ДОЛЖЕН БЫЛ ЭТО ДЕЛАТЬ",
 
-            "За дверью никого не было. " +
-            "Но когда ты обернулся, " +
-            "дверь в комнату уже была закрыта."
-        );
+    "За дверью никого не было. " +
+    "Но когда ты обернулся, " +
+    "дверь в комнату уже была закрыта."
+);
 
         return;
 
@@ -2223,7 +2264,10 @@ function disableGameButtons(){
 }
 
 
-function showEnding(title,text){
+function showEnding(number, category, title, text){
+
+    endingNumber.textContent =
+        "КОНЦОВКА №" + number + " — " + category;
 
     endingTitle.textContent =
         title;
@@ -2244,13 +2288,15 @@ function showEnding(title,text){
 function endingDoor(){
 
     showEnding(
-        "ТЫ ОТКРЫЛ ДВЕРЬ",
+    3,
+    "НЕЙТРАЛЬНАЯ",
+    "ТЫ ОТКРЫЛ ДВЕРЬ",
 
-        "За дверью никого не было. " +
-        "Коридор оказался пустым. " +
-        "Ты вернулся в комнату и закрыл дверь. " +
-        "Через несколько секунд кто-то снова позвонил."
-    );
+    "За дверью никого не было. " +
+    "Коридор оказался пустым. " +
+    "Ты вернулся в комнату и закрыл дверь. " +
+    "Через несколько секунд кто-то снова позвонил."
+);
 
 }
 
@@ -2258,14 +2304,16 @@ function endingDoor(){
 function endingKey(){
 
     showEnding(
-        "ЗА ДВЕРЬЮ",
+    4,
+    "НЕЙТРАЛЬНАЯ",
+    "ЗА ДВЕРЬЮ",
 
-        "Старый ключ подошёл к маленькому замку " +
-        "сбоку от двери. " +
-        "За дверью оказался технический коридор. " +
-        "На стенах висели фотографии жильцов этого дома. " +
-        "На последней фотографии был изображён ты."
-    );
+    "Старый ключ подошёл к маленькому замку " +
+    "сбоку от двери. " +
+    "За дверью оказался технический коридор. " +
+    "На стенах висели фотографии жильцов этого дома. " +
+    "На последней фотографии был изображён ты."
+);
 
 }
 
@@ -2273,13 +2321,15 @@ function endingKey(){
 function endingSecret(){
 
     showEnding(
-        "ПРАВДА",
+    5,
+    "СЕКРЕТНАЯ",
+    "ПРАВДА",
 
-        "Полиция приехала раньше, чем ты успел уйти. " +
-        "После осмотра дома они нашли старую комнату " +
-        "за стеной. На её стене было написано: " +
-        "«Звонящий никогда не был снаружи»."
-    );
+    "Полиция приехала раньше, чем ты успел уйти. " +
+    "После осмотра дома они нашли старую комнату " +
+    "за стеной. На её стене было написано: " +
+    "«Звонящий никогда не был снаружи»."
+);
 
 }
 
@@ -2287,12 +2337,15 @@ function endingSecret(){
 function endingFear(){
 
     showEnding(
-        "СТРАХ",
-"Ты больше не выдержал. " +
-        "Выключил свет и спрятался в комнате. " +
-        "Звонок продолжался ещё несколько минут, " +
-        "а потом внезапно прекратился."
-    );
+    6,
+    "ПЛОХАЯ",
+    "СТРАХ",
+
+    "Ты больше не выдержал. " +
+    "Выключил свет и спрятался в комнате. " +
+    "Звонок продолжался ещё несколько минут, " +
+    "а потом внезапно прекратился."
+);
 
 }
 
@@ -2305,8 +2358,10 @@ function endingMorning(){
 
     if(state.calledPolice){
 
-        showEnding(
-            "ПОЛИЦИЯ",
+    showEnding(
+        7,
+        "ХОРОШАЯ",
+        "ПОЛИЦИЯ",
 
             "На рассвете полиция приехала. " +
             "Они просмотрели камеры, " +
@@ -2320,8 +2375,10 @@ function endingMorning(){
 
     if(state.fear < 35){
 
-        showEnding(
-            "РАССВЕТ",
+    showEnding(
+        8,
+        "ХОРОШАЯ",
+        "РАССВЕТ",
 
             "Ты пережил ночь. " +
             "Когда взошло солнце, всё выглядело нормально. " +
@@ -2333,7 +2390,9 @@ function endingMorning(){
     }
 
     showEnding(
-        "УТРО",
+    9,
+    "НЕЙТРАЛЬНАЯ",
+    "УТРО",
 
         "Ты дождался рассвета. " +
         "Звонки прекратились. " +
