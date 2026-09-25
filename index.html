@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Не открывай дверь</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#000;
+    color:#fff;
+    font-family:Arial,sans-serif;
+}
+
+button{
+    font-family:Arial,sans-serif;
+}
+
+#game{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    background:#030303;
+}
+
+/* ================= МЕНЮ ================= */
+
+#menu{
+    position:absolute;
+    inset:0;
+    z-index:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+
+    background:
+        radial-gradient(circle at 50% 45%,
+        #303030 0%,
+        #111 35%,
+        #030303 75%,
+        #000 100%);
+}
+
+.menuBox{
+    width:min(650px,90%);
+}
+
+.menuTitle{
+    margin:0;
+    font-size:clamp(40px,8vw,76px);
+    letter-spacing:7px;
+    text-shadow:0 0 25px #777;
+}
+
+.menuSubtitle{
+    margin:15px 0 40px;
+    color:#888;
+}
+
+.menuButton{
+    display:block;
+    width:260px;
+    margin:12px auto;
+    padding:15px;
+    border:1px solid #666;
+    border-radius:7px;
+    background:#171717;
+    color:#fff;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.menuButton:hover{
+    background:#292929;
+}
+
+/* ================= КОМНАТА ================= */
+
+#room{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+
+    background:
+        radial-gradient(ellipse at 50% 45%,
+        rgba(65,65,65,.16),
+        rgba(5,5,5,.9) 55%,
+        #000 100%);
+}
+
+.wall{
+    position:absolute;
+    inset:0 0 26% 0;
+
+    background:
+        linear-gradient(90deg,
+        #050505 0%,
+        #171717 25%,
+        #242424 50%,
+        #171717 75%,
+        #050505 100%);
+}
+
+.wall::before{
+    content:"";
+    position:absolute;
+    inset:0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0 20%,
+            rgba(0,0,0,.25) 20% 21%,
+            transparent 21% 79%,
+            rgba(0,0,0,.25) 79% 80%,
+            transparent 80%
+        );
+}
+
+.wall::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:.18;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 55px,
+            #444 56px,
+            transparent 58px
+        );
+}
+
+.floor{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:26%;
+
+    border-top:2px solid #333;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #070707 0,
+            #070707 70px,
+            #151515 72px,
+            #151515 140px
+        );
+}
+
+/* ================= ДВЕРЬ ================= */
+
+#door{
+    position:absolute;
+    left:50%;
+    top:8%;
+
+    transform:translateX(-50%);
+
+    width:min(330px,44vw);
+    height:69%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #080504,
+            #21130d 15%,
+            #3a2116 48%,
+            #24150f 75%,
+            #070403
+        );
+
+    border:9px solid #030303;
+
+    box-shadow:
+        0 0 30px #000,
+        inset 0 0 35px #000;
+
+    transition:.3s;
+}
+
+#door::before{
+    content:"";
+
+    position:absolute;
+    inset:25px;
+
+    border:2px solid rgba(0,0,0,.45);
+    box-shadow:
+        inset 0 0 25px rgba(0,0,0,.6);
+}
+
+#door::after{
+    content:"";
+
+    position:absolute;
+    left:25px;
+    right:25px;
+    bottom:25px;
+
+    height:2px;
+
+    background:rgba(0,0,0,.5);
+}
+
+#door.light{
+    filter:brightness(1.35);
+}
+
+#peepholeDot{
+    position:absolute;
+    top:17%;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+
+    background:#010101;
+    border:3px solid #555;
+
+    box-shadow:
+        inset 0 0 12px #000,
+        0 0 8px #000;
+}
+
+#handle{
+    position:absolute;
+right:24px;
+    top:53%;
+
+    width:31px;
+    height:10px;
+
+    border-radius:10px;
+
+    background:#aaa;
+
+    box-shadow:
+        0 2px 8px #000;
+}
+
+/* ================= ИНТЕРЬЕР ================= */
+
+#table{
+    position:absolute;
+    left:7%;
+    bottom:20%;
+
+    width:145px;
+    height:55px;
+
+    background:#101010;
+
+    border:3px solid #222;
+
+    box-shadow:0 8px 20px #000;
+}
+
+#table::before,
+#table::after{
+    content:"";
+
+    position:absolute;
+    bottom:-100px;
+
+    width:10px;
+    height:100px;
+
+    background:#090909;
+}
+
+#table::before{
+    left:15px;
+}
+
+#table::after{
+    right:15px;
+}
+
+#lamp{
+    position:absolute;
+    left:10%;
+    bottom:calc(20% + 55px);
+
+    width:45px;
+    height:70px;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #555,
+            #171717 65%
+        );
+
+    border-radius:50%;
+
+    opacity:.55;
+
+    box-shadow:0 0 45px rgba(100,100,100,.12);
+}
+
+#picture{
+    position:absolute;
+    right:7%;
+    top:20%;
+
+    width:100px;
+    height:130px;
+
+    border:6px solid #111;
+
+    background:
+        linear-gradient(
+            145deg,
+            #333,
+            #111
+        );
+
+    opacity:.7;
+
+    box-shadow:0 10px 25px #000;
+}
+
+/* ================= ВЕРХ ================= */
+
+#topBar{
+    position:absolute;
+    top:15px;
+    left:18px;
+    right:18px;
+
+    z-index:20;
+
+    display:flex;
+    justify-content:space-between;
+
+    font-size:17px;
+
+    text-shadow:0 2px 5px #000;
+}
+
+#fearContainer{
+    position:absolute;
+    top:44px;
+    left:18px;
+
+    width:190px;
+    height:9px;
+
+    z-index:20;
+
+    border:1px solid #555;
+    background:#050505;
+}
+
+#fear{
+    width:0%;
+    height:100%;
+    background:#aaa;
+    transition:width .4s;
+}
+
+/* ================= ИНВЕНТАРЬ ================= */
+
+#inventory{
+    position:absolute;
+
+    top:70px;
+    right:18px;
+
+    z-index:20;
+
+    width:185px;
+
+    padding:10px;
+
+    border:1px solid #333;
+    border-radius:7px;
+
+    background:rgba(0,0,0,.7);
+
+    font-size:13px;
+}
+
+.inventoryTitle{
+    color:#aaa;
+    margin-bottom:7px;
+}
+
+.inventoryItem{
+    margin:5px 0;
+}
+
+/* ================= СООБЩЕНИЕ ================= */
+
+#message{
+    position:absolute;
+
+    left:50%;
+    bottom:130px;
+
+    transform:translateX(-50%);
+
+    z-index:30;
+
+    width:min(760px,92%);
+
+    min-height:60px;
+
+    padding:15px 18px;
+
+    border:1px solid #444;
+    border-radius:8px;
+
+    background:rgba(0,0,0,.82);
+
+    text-align:center;
+
+    line-height:1.45;
+}
+
+/* ================= КНОПКИ ================= */
+
+#actions{
+    position:absolute;
+
+    left:50%;
+    bottom:17px;
+
+    transform:translateX(-50%);
+
+    z-index:40;
+
+    width:min(900px,94%);
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:8px;
+}
+
+.actionButton{
+    min-height:48px;
+
+    border:1px solid #555;
+    border-radius:7px;
+
+    background:#181818;
+    color:#eee;
+
+    cursor:pointer;
+
+    font-size:13px;
+
+    transition:.15s;
+}
+
+.actionButton:hover{
+    background:#2d2d2d;
+}
+
+.actionButton:active{
+    transform:scale(.96);
+}
+
+.actionButton:disabled{
+    opacity:.25;
+    cursor:not-allowed;
+}
+
+/* ================= ОВЕРЛЕИ ================= */
+
+.overlay{
+    position:absolute;
+    inset:0;
+
+    z-index:100;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    flex-direction:column;
+
+    gap:20px;
+
+    background:rgba(0,0,0,.96);
+}
+
+/* ================= ГЛАЗОК ================= */
+
+#peepholeView{
+    width:min(370px,76vw);
+    height:min(370px,76vw);
+
+    border-radius:50%;
+
+    border:15px solid #151515;
+
+    box-shadow:
+        0 0 0 4px #555,
+        0 0 70px #000;
+
+    background:
+        radial-gradient(
+            circle,
+            #333 0,
+            #111 45%,
+            #030303 75%,
+            #000 100%
+        );
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    padding:45px;
+
+    font-size:17px;
+}
+
+/* ================= ТЕЛЕФОН ================= */
+
+#phoneScreen{
+width:min(350px,88vw);
+
+    min-height:430px;
+
+    padding:25px;
+
+    border:5px solid #333;
+    border-radius:30px;
+
+    background:#121212;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:14px;
+
+    text-align:center;
+}
+
+.phoneButton{
+    min-height:48px;
+
+    border:1px solid #555;
+    border-radius:7px;
+
+    background:#222;
+
+    color:#fff;
+
+    cursor:pointer;
+}
+
+/* ================= ЗАПИСКА ================= */
+
+#paper{
+    width:min(460px,87%);
+
+    padding:40px 30px;
+
+    background:#d8d0b8;
+
+    color:#151515;
+
+    box-shadow:0 15px 50px #000;
+
+    transform:rotate(-2deg);
+
+    font-family:Georgia,serif;
+
+    line-height:1.6;
+
+    text-align:center;
+}
+
+/* ================= КОНЦОВКА ================= */
+
+#ending{
+    position:absolute;
+
+    inset:0;
+
+    z-index:400;
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    padding:25px;
+
+    background:
+        radial-gradient(
+            circle,
+            #202020,
+            #000 75%
+        );
+}
+
+#endingBox{
+    width:min(700px,90%);
+}
+
+#endingTitle{
+    font-size:clamp(35px,7vw,60px);
+
+    margin:0 0 20px;
+}
+
+#endingText{
+    color:#bbb;
+
+    font-size:18px;
+
+    line-height:1.6;
+}
+
+#restartButton{
+    width:220px;
+
+    margin-top:25px;
+
+    padding:14px;
+
+    border:1px solid #666;
+    border-radius:7px;
+
+    background:#1c1c1c;
+
+    color:#fff;
+
+    cursor:pointer;
+}
+
+/* ================= МОБИЛЬНЫЕ ================= */
+
+@media(max-width:700px){
+
+    #inventory{
+        width:150px;
+        font-size:11px;
+    }
+
+    #actions{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .actionButton{
+        font-size:11px;
+    }
+
+    #message{
+        bottom:145px;
+        font-size:14px;
+    }
+
+    #table,
+    #lamp,
+    #picture{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+<!-- ================= МЕНЮ ================= -->
+
+<div id="menu">
+
+    <div class="menuBox">
+
+        <h1 class="menuTitle">
+            НЕ ОТКРЫВАЙ<br>ДВЕРЬ
+        </h1>
+
+        <div class="menuSubtitle">
+            Небольшой атмосферный хоррор
+        </div>
+
+        <button class="menuButton" id="startButton">
+            НАЧАТЬ ИГРУ
+        </button>
+
+        <button class="menuButton" id="helpButton">
+            КАК ИГРАТЬ
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= КОМНАТА ================= -->
+
+<div id="room">
+
+    <div class="wall"></div>
+    <div class="floor"></div>
+
+    <div id="table"></div>
+    <div id="lamp"></div>
+    <div id="picture"></div>
+
+    <div id="door">
+
+        <div id="peepholeDot"></div>
+        <div id="handle"></div>
+
+    </div>
+
+
+    <div id="topBar">
+
+        <div>
+            🌙 Ночь <span id="night">1</span>
+        </div>
+
+        <div>
+            🕐 <span id="time">23:00</span>
+        </div>
+
+    </div>
+
+
+    <div id="fearContainer">
+        <div id="fear"></div>
+    </div>
+
+
+    <div id="inventory">
+
+        <div class="inventoryTitle">
+            ИНВЕНТАРЬ
+        </div>
+
+        <div class="inventoryItem">
+            🔦 Фонарик: есть
+        </div>
+
+        <div class="inventoryItem">
+            📱 Телефон: есть
+        </div>
+
+        <div class="inventoryItem">
+            🔑 Ключ:
+            <span id="keyItem">нет</span>
+        </div>
+
+        <div class="inventoryItem">
+            📄 Записка:
+            <span id="noteItem">нет</span>
+        </div>
+
+    </div>
+
+
+    <div id="message">
+        Ты дома один. В дверь кто-то звонит.
+    </div>
+
+
+    <div id="actions">
+
+        <button class="actionButton" id="peepholeButton">
+            🔦 Глазок
+        </button>
+
+        <button class="actionButton" id="phoneButton">
+            📱 Телефон
+        </button>
+
+        <button class="actionButton" id="waitButton">
+            🤫 Ждать
+        </button>
+
+        <button class="actionButton" id="openButton">
+            🚪 Открыть
+        </button>
+
+        <button class="actionButton" id="searchButton">
+🔎 Осмотреться
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= ГЛАЗОК ================= -->
+
+<div class="overlay" id="peepholeOverlay">
+
+    <div id="peepholeView">
+        Ты смотришь в глазок...
+    </div>
+
+    <button class="actionButton" id="closePeephole">
+        Вернуться
+    </button>
+
+</div>
+
+
+<!-- ================= ТЕЛЕФОН ================= -->
+
+<div class="overlay" id="phoneOverlay">
+
+    <div id="phoneScreen">
+
+        <h2>📱 ТЕЛЕФОН</h2>
+
+        <div id="phoneText">
+            Кому позвонить?
+        </div>
+
+        <button class="phoneButton" id="friendButton">
+            Позвонить другу
+        </button>
+
+        <button class="phoneButton" id="policeButton">
+            Позвонить в полицию
+        </button>
+
+        <button class="phoneButton" id="closePhone">
+            Убрать телефон
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= ЗАПИСКА ================= -->
+
+<div class="overlay" id="noteOverlay">
+
+    <div id="paper">
+
+        <h2>СТАРАЯ ЗАПИСКА</h2>
+
+        <p>
+            Если ты это читаешь,
+            значит, ты уже услышал звонок.
+        </p>
+
+        <p>
+            Не открывай дверь после полуночи.
+        </p>
+
+        <p>
+            И главное...
+        </p>
+
+        <p>
+            <b>
+                Не отвечай тому,
+                кто назовёт твоё имя.
+            </b>
+        </p>
+
+        <button class="phoneButton" id="closeNote">
+            Убрать записку
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= КОНЦОВКА ================= -->
+
+<div id="ending">
+
+    <div id="endingBox">
+
+        <h1 id="endingTitle">
+            Конец
+        </h1>
+
+        <p id="endingText">
+            ...
+        </p>
+
+        <button id="restartButton">
+            ИГРАТЬ СНОВА
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ================= МУЗЫКА ================= -->
+
+<!--
+    ПОЛОЖИ ОБА ФАЙЛА РЯДОМ С index.html:
+
+    music.mp3  = обычная фоновая музыка
+    scary.mp3  = напряжённая музыка
+
+    НАЗВАНИЯ ФАЙЛОВ МЕНЯТЬ НЕ НУЖНО.
+-->
+
+<audio id="backgroundMusic" loop preload="auto">
+    <source src="./music.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="scaryMusic" preload="auto">
+    <source src="./scary.mp3" type="audio/mpeg">
+</audio>
+
+</div>
+
+
+<script>
+"use strict";
+
+/* =========================================================
+                    СОСТОЯНИЕ ИГРЫ
+========================================================= */
+
+const state = {
+
+    elapsedMinutes: 0,
+    night: 1,
+    fear: 0,
+    waits: 0,
+    searches: 0,
+    eventIndex: 0,
+
+    hasKey: false,
+    hasNote: false,
+    calledPolice: false,
+
+    gameOver: false
+
+};
+
+
+/* =========================================================
+                        ЭЛЕМЕНТЫ
+========================================================= */
+
+const menu = document.getElementById("menu");
+const startButton = document.getElementById("startButton");
+const helpButton = document.getElementById("helpButton");
+
+const timeElement = document.getElementById("time");
+const nightElement = document.getElementById("night");
+const fearElement = document.getElementById("fear");
+
+const messageElement = document.getElementById("message");
+
+const keyItem = document.getElementById("keyItem");
+const noteItem = document.getElementById("noteItem");
+
+const door = document.getElementById("door");
+
+const peepholeOverlay =
+    document.getElementById("peepholeOverlay");
+
+const peepholeView =
+    document.getElementById("peepholeView");
+
+const phoneOverlay =
+    document.getElementById("phoneOverlay");
+
+const phoneText =
+    document.getElementById("phoneText");
+
+const noteOverlay =
+    document.getElementById("noteOverlay");
+
+const ending =
+    document.getElementById("ending");
+
+const endingTitle =
+    document.getElementById("endingTitle");
+
+const endingText =
+    document.getElementById("endingText");
+
+const backgroundMusic =
+    document.getElementById("backgroundMusic");
+
+const scaryMusic =
+document.getElementById("scaryMusic");
+
+
+/* =========================================================
+                         ГРОМКОСТЬ
+========================================================= */
+
+backgroundMusic.volume = 0.65;
+scaryMusic.volume = 1.0;
+
+
+/* =========================================================
+                    АУДИО КОНТЕКСТ
+========================================================= */
+
+let audioContext = null;
+
+function initAudio(){
+
+    if(!audioContext){
+
+        audioContext =
+            new(
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+    }
+
+    if(audioContext.state === "suspended"){
+
+        audioContext.resume();
+
+    }
+
+}
+
+
+/* =========================================================
+                       ЗВУКОВЫЕ ЭФФЕКТЫ
+========================================================= */
+
+function soundTone(
+    frequency,
+    duration,
+    volume = 0.05,
+    type = "sine"
+){
+
+    initAudio();
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type = type;
+
+    oscillator.frequency.value =
+        frequency;
+
+    gain.gain.setValueAtTime(
+        volume,
+        audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + duration
+    );
+
+}
+
+
+function bellSound(){
+
+    soundTone(
+        700,
+        .18,
+        .07
+    );
+
+    setTimeout(function(){
+
+        soundTone(
+            500,
+            .3,
+            .06
+        );
+
+    },220);
+
+}
+
+
+function knockSound(){
+
+    soundTone(
+        90,
+        .08,
+        .12,
+        "triangle"
+    );
+
+    setTimeout(function(){
+
+        soundTone(
+            75,
+            .08,
+            .1,
+            "triangle"
+        );
+
+    },180);
+
+    setTimeout(function(){
+
+        soundTone(
+            90,
+            .08,
+            .12,
+            "triangle"
+        );
+
+    },350);
+
+}
+
+
+/* =========================================================
+                  СТРАШНАЯ МУЗЫКА
+                  РОВНО 10 СЕКУНД
+========================================================= */
+
+let scaryMusicTimer = null;
+
+function playScaryMusic(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    clearTimeout(scaryMusicTimer);
+
+    scaryMusic.pause();
+    scaryMusic.currentTime = 0;
+
+    /*
+        Основную музыку делаем тише,
+        пока играет страшная.
+    */
+
+    backgroundMusic.volume = 0.12;
+
+    scaryMusic.volume = 1.0;
+
+    scaryMusic.play().catch(function(error){
+
+        console.log(
+            "Не удалось запустить scary.mp3:",
+            error
+        );
+
+    });
+
+    /*
+        Через 10 секунд scary.mp3
+        полностью выключается.
+    */
+
+    scaryMusicTimer = setTimeout(function(){
+
+        scaryMusic.pause();
+        scaryMusic.currentTime = 0;
+
+        backgroundMusic.volume = 0.65;
+
+    },10000);
+
+}
+
+
+/* =========================================================
+                       ОСТАНОВКА СТРАШНОЙ МУЗЫКИ
+========================================================= */
+
+function stopScaryMusic(){
+
+    clearTimeout(scaryMusicTimer);
+
+    scaryMusic.pause();
+
+    scaryMusic.currentTime = 0;
+
+    backgroundMusic.volume = 0.65;
+
+}
+
+
+/* =========================================================
+                          ВРЕМЯ
+========================================================= */
+
+function updateTime(){
+
+    const startMinutes = 23 * 60;
+
+    const absoluteMinutes =
+        startMinutes +
+        state.elapsedMinutes;
+
+    const clockMinutes =
+        absoluteMinutes % 1440;
+
+    const hours =
+        Math.floor(clockMinutes / 60);
+
+    const minutes =
+        clockMinutes % 60;
+
+    const h =
+        String(hours).padStart(2,"0");
+
+    const m =
+String(minutes).padStart(2,"0");
+
+    timeElement.textContent =
+        h + ":" + m;
+
+}
+
+
+function advanceTime(minutes){
+
+    if(state.gameOver){
+        return;
+    }
+
+    state.elapsedMinutes += minutes;
+
+    updateTime();
+
+    if(state.elapsedMinutes >= 420){
+
+        endingMorning();
+
+    }
+
+}
+
+
+/* =========================================================
+                          СТРАХ
+========================================================= */
+
+function updateFear(){
+
+    if(state.fear < 0){
+        state.fear = 0;
+    }
+
+    if(state.fear > 100){
+        state.fear = 100;
+    }
+
+    fearElement.style.width =
+        state.fear + "%";
+
+    if(
+        state.fear >= 100 &&
+        !state.gameOver
+    ){
+
+        endingFear();
+
+    }
+
+}
+
+
+function increaseFear(amount){
+
+    state.fear += amount;
+
+    updateFear();
+
+}
+
+
+function decreaseFear(amount){
+
+    state.fear -= amount;
+
+    updateFear();
+
+}
+
+
+/* =========================================================
+                       СООБЩЕНИЯ
+========================================================= */
+
+function showMessage(text){
+
+    messageElement.textContent =
+        text;
+
+}
+
+
+/* =========================================================
+                    СОБЫТИЯ ГЛАЗКА
+========================================================= */
+
+const peepholeEvents = [
+
+    {
+        text:
+        "В глазке никого нет. " +
+        "Но звонок продолжает звучать.",
+        fear:3,
+        dangerous:false
+    },
+
+    {
+        text:
+        "В коридоре стоит человек. " +
+        "Он смотрит прямо на дверь.",
+        fear:10,
+        dangerous:true
+    },
+
+    {
+        text:
+        "Похоже на твоего соседа. " +
+        "Но он совершенно неподвижен.",
+        fear:8,
+        dangerous:false
+    },
+
+    {
+        text:
+        "Коридор пуст. " +
+        "Лампочка над дверью мигает.",
+        fear:3,
+        dangerous:false
+    },
+
+    {
+        text:
+        "Вдали стоит тёмный силуэт.",
+        fear:13,
+        dangerous:true
+    },
+
+    {
+        text:
+        "Перед дверью лежит маленькая записка.",
+        fear:5,
+        dangerous:false
+    },
+
+    {
+        text:
+        "Кто-то стоит прямо перед дверью. " +
+        "Ты слышишь дыхание.",
+        fear:15,
+        dangerous:true
+    },
+
+    {
+        text:
+        "В глазке появляется лицо. " +
+        "Через секунду оно исчезает.",
+        fear:20,
+        dangerous:true
+    },
+
+    {
+        text:
+        "Ты видишь человека, похожего на себя.",
+        fear:25,
+        dangerous:true
+    },
+
+    {
+        text:
+        "Коридор пуст. " +
+        "Но в отражении стекла кто-то стоит позади тебя.",
+        fear:22,
+        dangerous:true
+    },
+
+    {
+        text:
+        "Кто-то медленно проходит мимо двери.",
+        fear:12,
+        dangerous:true
+    },
+
+    {
+        text:
+        "Ты слышишь голос: «Я знаю, что ты дома».",
+        fear:18,
+        dangerous:true
+    }
+
+];
+
+
+/* =========================================================
+                         ГЛАЗОК
+========================================================= */
+
+document
+.getElementById("peepholeButton")
+.addEventListener("click",function(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    initAudio();
+
+    const event =
+        peepholeEvents[
+            state.eventIndex %
+            peepholeEvents.length
+        ];
+
+    peepholeView.textContent =
+        event.text;
+
+    peepholeOverlay.style.display =
+        "flex";
+
+    increaseFear(event.fear);
+
+    /*
+        Страшная музыка появляется только
+        если в глазке действительно кто-то
+        или происходит опасное событие.
+    */
+
+    if(event.dangerous){
+
+        playScaryMusic();
+
+    }else{
+
+        /*
+            Если событие спокойное,
+            страшную музыку не запускаем.
+        */
+
+        stopScaryMusic();
+
+    }
+
+    state.eventIndex++;
+
+    advanceTime(7);
+
+});
+
+
+document
+.getElementById("closePeephole")
+.addEventListener("click",function(){
+peepholeOverlay.style.display =
+        "none";
+
+    showMessage(
+        "Ты отходишь от двери."
+    );
+
+});
+
+
+/* =========================================================
+                         ТЕЛЕФОН
+========================================================= */
+
+document
+.getElementById("phoneButton")
+.addEventListener("click",function(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    initAudio();
+
+    phoneOverlay.style.display =
+        "flex";
+
+    phoneText.textContent =
+        "Кому позвонить?";
+
+});
+
+
+document
+.getElementById("friendButton")
+.addEventListener("click",function(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    phoneText.textContent =
+        "Друг отвечает: «Не открывай дверь. " +
+        "Что бы ты ни услышал — не открывай.»";
+
+    decreaseFear(5);
+
+    advanceTime(5);
+
+});
+
+
+document
+.getElementById("policeButton")
+.addEventListener("click",function(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    state.calledPolice = true;
+
+    phoneText.textContent =
+        "Полиция приняла вызов. " +
+        "Они обещали приехать.";
+
+    decreaseFear(12);
+
+    advanceTime(5);
+
+});
+
+
+document
+.getElementById("closePhone")
+.addEventListener("click",function(){
+
+    phoneOverlay.style.display =
+        "none";
+
+    showMessage(
+        "Ты убираешь телефон. " +
+        "В дверь снова звонят."
+    );
+
+    bellSound();
+
+});
+
+
+/* =========================================================
+                           ЖДАТЬ
+========================================================= */
+
+document
+.getElementById("waitButton")
+.addEventListener("click",function(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    state.waits++;
+
+    const events = [
+
+        "Ты сидишь в тишине. Звонок прекращается.",
+
+        "В дверь три раза стучат.",
+
+        "За дверью слышится тихий шёпот.",
+
+        "Кто-то произносит твоё имя.",
+
+        "Под дверью появляется длинная тень.",
+
+        "Звонок становится очень громким.",
+
+        "В коридоре становится тихо.",
+
+        "Ты слышишь удаляющиеся шаги.",
+
+        "Кто-то проводит рукой по двери.",
+
+        "За дверью кто-то тяжело вздыхает.",
+
+        "Звонок прекращается... но затем раздаётся изнутри комнаты.",
+
+        "Кто-то тихо говорит: «Открой»."
+
+    ];
+
+    const randomIndex =
+        Math.floor(
+            Math.random() *
+            events.length
+        );
+
+    showMessage(
+        events[randomIndex]
+    );
+
+    if(
+        randomIndex === 1 ||
+        randomIndex === 4 ||
+        randomIndex === 5 ||
+        randomIndex === 8 ||
+        randomIndex === 9 ||
+        randomIndex === 11
+    ){
+
+        knockSound();
+
+        increaseFear(8);
+
+    }else{
+
+        increaseFear(2);
+
+    }
+
+    advanceTime(12);
+
+});
+
+
+/* =========================================================
+                       ОСМОТРЕТЬСЯ
+========================================================= */
+
+document
+.getElementById("searchButton")
+.addEventListener("click",function(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    state.searches++;
+
+    if(state.searches === 1){
+
+        state.hasKey = true;
+
+        keyItem.textContent =
+            "есть";
+
+        showMessage(
+            "На столе лежит старый ключ. " +
+            "Ты забираешь его."
+        );
+
+        decreaseFear(3);
+
+    }
+
+    else if(state.searches === 2){
+
+        state.hasNote = true;
+
+        noteItem.textContent =
+            "есть";
+
+        noteOverlay.style.display =
+            "flex";
+
+        showMessage(
+            "Ты нашёл старую записку."
+        );
+
+    }
+
+    else if(state.searches === 3){
+
+        door.classList.add("light");
+
+        showMessage(
+            "Ты нашёл выключатель. " +
+            "Свет стал немного ярче."
+        );
+
+        decreaseFear(10);
+
+    }
+
+    else if(state.searches === 4){
+
+        showMessage(
+            "На обратной стороне картины " +
+            "написано: «НЕ СМОТРИ В ГЛАЗОК ПОСЛЕ 03:00»."
+        );
+
+        increaseFear(7);
+
+    }
+else if(state.searches === 5){
+
+        showMessage(
+            "Под столом ты находишь царапины. " +
+            "Они выглядят так, будто их оставили изнутри."
+        );
+
+        increaseFear(8);
+
+    }
+
+    else{
+
+        const texts = [
+
+            "Ты ничего необычного не находишь.",
+
+            "Часы на стене показывают неправильное время.",
+
+            "Кто-то постучал из другой комнаты.",
+
+            "Ты замечаешь новые царапины на полу.",
+
+            "На стене появилась новая трещина.",
+
+            "Лампочка на секунду погасла.",
+
+            "Тебе показалось, что дверь стала немного приоткрыта.",
+
+            "В комнате стало заметно холоднее."
+
+        ];
+
+        const index =
+            Math.floor(
+                Math.random() *
+                texts.length
+            );
+
+        showMessage(
+            texts[index]
+        );
+
+        increaseFear(3);
+
+    }
+
+    advanceTime(8);
+
+});
+
+
+/* =========================================================
+                         ЗАПИСКА
+========================================================= */
+
+document
+.getElementById("closeNote")
+.addEventListener("click",function(){
+
+    noteOverlay.style.display =
+        "none";
+
+    showMessage(
+        "Теперь ты знаешь главное: " +
+        "после полуночи дверь лучше не открывать."
+    );
+
+});
+
+
+/* =========================================================
+                       ОТКРЫТЬ ДВЕРЬ
+========================================================= */
+
+document
+.getElementById("openButton")
+.addEventListener("click",function(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    if(
+        state.hasKey &&
+        state.hasNote &&
+        state.calledPolice
+    ){
+
+        endingSecret();
+
+        return;
+
+    }
+
+    if(
+        state.hasKey &&
+        state.hasNote
+    ){
+
+        endingKey();
+
+        return;
+
+    }
+
+    if(state.elapsedMinutes < 60){
+
+        showEnding(
+            "СЛИШКОМ РАНО",
+
+            "Ты резко открыл дверь. " +
+            "Коридор был пуст. " +
+            "Ты уже хотел закрыть её, " +
+            "но из темноты кто-то тихо произнёс твоё имя."
+        );
+
+        return;
+
+    }
+
+    if(state.fear >= 60){
+
+        showEnding(
+            "ТЫ НЕ ДОЛЖЕН БЫЛ ЭТО ДЕЛАТЬ",
+
+            "За дверью никого не было. " +
+            "Но когда ты обернулся, " +
+            "дверь в комнату уже была закрыта."
+        );
+
+        return;
+
+    }
+
+    endingDoor();
+
+});
+
+
+/* =========================================================
+                         КОНЦОВКИ
+========================================================= */
+
+function disableGameButtons(){
+
+    const buttons =
+        document.querySelectorAll(
+            "#actions button"
+        );
+
+    buttons.forEach(function(button){
+
+        button.disabled = true;
+
+    });
+
+    state.gameOver = true;
+
+}
+
+
+function showEnding(title,text){
+
+    endingTitle.textContent =
+        title;
+
+    endingText.textContent =
+        text;
+
+    ending.style.display =
+        "flex";
+
+    stopScaryMusic();
+
+    disableGameButtons();
+
+}
+
+
+function endingDoor(){
+
+    showEnding(
+        "ТЫ ОТКРЫЛ ДВЕРЬ",
+
+        "За дверью никого не было. " +
+        "Коридор оказался пустым. " +
+        "Ты вернулся в комнату и закрыл дверь. " +
+        "Через несколько секунд кто-то снова позвонил."
+    );
+
+}
+
+
+function endingKey(){
+
+    showEnding(
+        "ЗА ДВЕРЬЮ",
+
+        "Старый ключ подошёл к маленькому замку " +
+        "сбоку от двери. " +
+        "За дверью оказался технический коридор. " +
+        "На стенах висели фотографии жильцов этого дома. " +
+        "На последней фотографии был изображён ты."
+    );
+
+}
+
+
+function endingSecret(){
+
+    showEnding(
+        "ПРАВДА",
+
+        "Полиция приехала раньше, чем ты успел уйти. " +
+        "После осмотра дома они нашли старую комнату " +
+        "за стеной. На её стене было написано: " +
+        "«Звонящий никогда не был снаружи»."
+    );
+
+}
+
+
+function endingFear(){
+
+    showEnding(
+        "СТРАХ",
+"Ты больше не выдержал. " +
+        "Выключил свет и спрятался в комнате. " +
+        "Звонок продолжался ещё несколько минут, " +
+        "а потом внезапно прекратился."
+    );
+
+}
+
+
+function endingMorning(){
+
+    if(state.gameOver){
+        return;
+    }
+
+    if(state.calledPolice){
+
+        showEnding(
+            "ПОЛИЦИЯ",
+
+            "На рассвете полиция приехала. " +
+            "Они просмотрели камеры, " +
+            "но на записи не оказалось ни одного человека. " +
+            "Однако дверь несколько раз открывалась сама."
+        );
+
+        return;
+
+    }
+
+    if(state.fear < 35){
+
+        showEnding(
+            "РАССВЕТ",
+
+            "Ты пережил ночь. " +
+            "Когда взошло солнце, всё выглядело нормально. " +
+            "Ты решил больше никогда не открывать дверь ночью."
+        );
+
+        return;
+
+    }
+
+    showEnding(
+        "УТРО",
+
+        "Ты дождался рассвета. " +
+        "Звонки прекратились. " +
+        "Перед дверью лежала записка: «Сегодня тебе повезло»."
+    );
+
+}
+
+
+/* =========================================================
+                       СБРОС ИГРЫ
+========================================================= */
+
+function resetGame(){
+
+    stopScaryMusic();
+
+    state.elapsedMinutes = 0;
+    state.night = 1;
+    state.fear = 0;
+    state.waits = 0;
+    state.searches = 0;
+    state.eventIndex = 0;
+
+    state.hasKey = false;
+    state.hasNote = false;
+    state.calledPolice = false;
+    state.gameOver = false;
+
+    keyItem.textContent =
+        "нет";
+
+    noteItem.textContent =
+        "нет";
+
+    fearElement.style.width =
+        "0%";
+
+    nightElement.textContent =
+        "1";
+
+    updateTime();
+
+    showMessage(
+        "Ты дома один. " +
+        "В дверь кто-то звонит."
+    );
+
+    const buttons =
+        document.querySelectorAll(
+            "#actions button"
+        );
+
+    buttons.forEach(function(button){
+
+        button.disabled = false;
+
+    });
+
+    ending.style.display =
+        "none";
+
+    peepholeOverlay.style.display =
+        "none";
+
+    phoneOverlay.style.display =
+        "none";
+
+    noteOverlay.style.display =
+        "none";
+
+    door.classList.remove("light");
+
+}
+
+
+/* =========================================================
+                       НАЧАТЬ ИГРУ
+========================================================= */
+
+startButton.addEventListener(
+    "click",
+    function(){
+
+        initAudio();
+
+        menu.style.display =
+            "none";
+
+        resetGame();
+
+        /*
+            Фоновая музыка запускается
+            после нажатия кнопки.
+        */
+
+        backgroundMusic.currentTime =
+            0;
+
+        backgroundMusic.volume =
+            0.65;
+
+        backgroundMusic.play().catch(
+            function(error){
+
+                console.log(
+                    "Не удалось запустить music.mp3:",
+                    error
+                );
+
+            }
+        );
+
+        bellSound();
+
+    }
+);
+
+
+/* =========================================================
+                         ПОМОЩЬ
+========================================================= */
+
+helpButton.addEventListener(
+    "click",
+    function(){
+
+        alert(
+            "Твоя задача — пережить ночь.\n\n" +
+
+            "🔦 Проверяй глазок.\n" +
+
+            "📱 Пользуйся телефоном.\n" +
+
+            "🔎 Исследуй комнату.\n" +
+
+            "🤫 Иногда лучше ждать.\n\n" +
+
+            "Следи за временем и страхом.\n\n" +
+
+            "В игре есть несколько концовок."
+        );
+
+    }
+);
+
+
+/* =========================================================
+                      ПЕРЕЗАПУСК
+========================================================= */
+
+document
+.getElementById("restartButton")
+.addEventListener(
+    "click",
+    function(){
+
+        resetGame();
+
+        menu.style.display =
+            "none";
+
+        backgroundMusic.currentTime =
+            0;
+
+        backgroundMusic.volume =
+            0.65;
+
+        backgroundMusic.play().catch(
+function(error){
+
+                console.log(
+                    "Не удалось запустить music.mp3:",
+                    error
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+                  ПЕРВОНАЧАЛЬНОЕ СОСТОЯНИЕ
+========================================================= */
+
+updateTime();
+
+</script>
+
+</body>
+</html>
