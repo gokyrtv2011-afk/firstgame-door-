@@ -667,13 +667,343 @@ width:min(350px,88vw);
 }
 
 /* ================= МОБИЛЬНЫЕ ================= */
+/* ================= МОБИЛЬНАЯ ВЕРСИЯ ================= */
 
-@media(max-width:700px){
+@media (max-width: 700px){
+
+    html,
+    body{
+        width:100%;
+        height:100%;
+        height:100dvh;
+        overflow:hidden;
+    }
+
+    #game{
+        width:100%;
+        height:100%;
+        height:100dvh;
+        min-height:0;
+    }
+
+    /* ===== МЕНЮ ===== */
+
+    .menuBox{
+        width:90%;
+        max-width:420px;
+    }
+
+    .menuTitle{
+        font-size:clamp(38px,12vw,60px);
+        line-height:1.05;
+        letter-spacing:4px;
+    }
+
+    .menuSubtitle{
+        font-size:14px;
+        margin:14px 0 30px;
+    }
+
+    .menuButton{
+        width:min(280px,85vw);
+        min-height:52px;
+        padding:14px;
+        font-size:15px;
+    }
+
+    /* ===== СТЕНА ===== */
+
+    .wall{
+        inset:0 0 29% 0;
+    }
+
+    .floor{
+        height:29%;
+    }
+
+    /* ===== ДВЕРЬ ===== */
+
+    #door{
+        top:10%;
+        width:min(58vw,280px);
+        height:58%;
+        border-width:7px;
+    }
+
+    #door::before{
+        inset:18px;
+    }
+
+    #door::after{
+        left:18px;
+        right:18px;
+        bottom:18px;
+    }
+
+    #peepholeDot{
+        width:32px;
+        height:32px;
+        border-width:2px;
+    }
+
+    #handle{
+        right:17px;
+        width:28px;
+        height:9px;
+    }
+
+    /* ===== ВЕРХНЯЯ ПАНЕЛЬ ===== */
+
+    #topBar{
+        top:max(10px, env(safe-area-inset-top));
+        left:12px;
+        right:12px;
+        font-size:14px;
+    }
+
+    #fearContainer{
+        top:38px;
+        left:12px;
+        width:135px;
+        height:8px;
+    }
+
+    /* ===== ИНВЕНТАРЬ ===== */
 
     #inventory{
-        width:150px;
+        top:60px;
+        right:10px;
+
+        width:145px;
+
+        padding:7px 9px;
+
+        border-radius:6px;
+
+        font-size:10px;
+    }
+
+    .inventoryTitle{
+        margin-bottom:4px;
+        font-size:10px;
+    }
+
+    .inventoryItem{
+        margin:3px 0;
+    }
+
+    /* ===== СООБЩЕНИЕ ===== */
+
+    #message{
+        left:50%;
+
+        bottom:150px;
+
+        width:calc(100% - 24px);
+
+        min-height:54px;
+
+        padding:11px 12px;
+
+        font-size:13px;
+
+        line-height:1.35;
+
+        border-radius:7px;
+    }
+
+    /* ===== КНОПКИ ===== */
+
+    #actions{
+        left:12px;
+        right:12px;
+        bottom:max(8px, env(safe-area-inset-bottom));
+
+        width:auto;
+
+        transform:none;
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:6px;
+    }
+
+    .actionButton{
+        min-height:45px;
+
+        padding:7px 4px;
+
+        font-size:12px;
+
+        border-radius:6px;
+    }
+
+    /* ===== ГЛАЗОК ===== */
+
+    #peepholeOverlay{
+        padding:
+            max(15px, env(safe-area-inset-top))
+            12px
+            max(15px, env(safe-area-inset-bottom))
+            12px;
+    }
+
+    #peepholeView{
+        width:min(78vw,330px);
+        height:min(78vw,330px);
+
+        border-width:10px;
+
+        padding:30px;
+
+        font-size:14px;
+    }
+
+    /* ===== ТЕЛЕФОН ===== */
+
+    #phoneOverlay{
+        padding:15px;
+    }
+
+    #phoneScreen{
+        width:min(88vw,340px);
+
+        min-height:0;
+
+        padding:22px 16px;
+
+        border-width:4px;
+        border-radius:24px;
+
+        gap:11px;
+    }
+
+    #phoneScreen h2{
+        margin:5px 0;
+        font-size:22px;
+    }
+
+    .phoneButton{
+        min-height:48px;
+        font-size:13px;
+    }
+
+    /* ===== ЗАПИСКА ===== */
+
+    #paper{
+        width:calc(100% - 30px);
+
+        max-height:80vh;
+
+        overflow:auto;
+
+        padding:25px 18px;
+
+        font-size:14px;
+    }
+
+    #paper h2{
+        font-size:21px;
+    }
+
+    /* ===== КОНЦОВКА ===== */
+
+    #ending{
+        padding:18px;
+    }
+
+    #endingBox{
+        width:92%;
+    }
+
+    #endingTitle{
+        font-size:clamp(32px,10vw,48px);
+        line-height:1.05;
+    }
+
+    #endingText{
+        font-size:15px;
+        line-height:1.5;
+    }
+
+    #restartButton{
+        width:min(240px,80vw);
+        min-height:50px;
+    }
+
+    /* ===== УБИРАЕМ ДЕКОР, КОТОРЫЙ МЕШАЕТ НА МАЛЕНЬКОМ ЭКРАНЕ ===== */
+
+    #table,
+    #lamp,
+    #picture{
+        display:none;
+    }
+}
+
+
+/* ================= ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ ================= */
+
+@media (max-width:380px){
+
+    #door{
+        width:58vw;
+        height:55%;
+    }
+
+    #inventory{
+        width:132px;
+        font-size:9px;
+    }
+
+    #message{
+        bottom:148px;
+        font-size:12px;
+    }
+
+    #actions{
+        gap:5px;
+    }
+
+    .actionButton{
+        min-height:43px;
         font-size:11px;
     }
+
+}
+
+
+/* ================= ТЕЛЕФОН В ГОРИЗОНТАЛЬНОМ РЕЖИМЕ ================= */
+
+@media (max-width:700px) and (orientation:landscape){
+
+    #door{
+        top:7%;
+        height:65%;
+        width:min(32vw,230px);
+    }
+
+    #inventory{
+        top:48px;
+        width:150px;
+    }
+
+    #message{
+        bottom:105px;
+        width:65%;
+    }
+
+    #actions{
+        grid-template-columns:repeat(5,1fr);
+        bottom:5px;
+    }
+
+    .actionButton{
+        min-height:40px;
+        font-size:10px;
+    }
+
+}
+
 
     #actions{
         grid-template-columns:repeat(3,1fr);
