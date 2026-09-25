@@ -2625,213 +2625,85 @@ updateTime();
 </style>
 
 <script>
-/* =========================================================
-                 ОБЩАЯ ГРОМКОСТЬ ИГРЫ
-========================================================= */
+<!-- ================= ГРОМКОСТЬ ================= -->
 
-(function(){
+<div id="volumeControl">
+    🔊
+    <input
+        id="volumeSlider"
+        type="range"
+        min="0"
+        max="100"
+        value="65"
+    >
+    <span id="volumeValue">65%</span>
+</div>
 
-    const slider =
-        document.getElementById(
-            "masterVolumeSlider"
-        );
+<style>
+#volumeControl{
+    position:fixed;
+    left:10px;
+    bottom:10px;
+    z-index:9999;
 
-    const valueText =
-        document.getElementById(
-            "masterVolumeValue"
-        );
+    display:flex;
+    align-items:center;
+    gap:6px;
 
-    const icon =
-        document.getElementById(
-            "masterVolumeIcon"
-        );
+    padding:7px 9px;
 
+    background:rgba(0,0,0,.8);
+    border:1px solid #444;
+    border-radius:7px;
 
-    /*
-        Это громкость, которую выбрал игрок.
+    color:#aaa;
+    font-size:12px;
+}
 
-        65 = 65%
-        50 = 50%
-        20 = 20%
-        0  = без музыки
-    */
+#volumeSlider{
+    width:90px;
+}
 
-    let masterVolume =
-        Number(slider.value) / 100;
+#volumeValue{
+    width:30px;
+    text-align:right;
+}
 
-
-    /*
-        Запоминаем оригинальный volume
-        каждого аудиофайла.
-
-        music.mp3  -> 0.65
-        scary.mp3  -> 1.0
-    */
-
-    const originalVolumes = {
-
-        backgroundMusic:0.65,
-
-        scaryMusic:1.0
-
-    };
-
-
-    /*
-        Настоящая установка громкости.
-
-        Например:
-
-        scaryMusic.volume = 1.0
-
-        превращается для игрока в:
-
-        1.0 × 0.65 = 0.65
-    */
-
-    function applyVolume(){
-
-        if(
-            typeof backgroundMusic !==
-            "undefined"
-        ){
-
-            backgroundMusic.volume =
-                originalVolumes.backgroundMusic *
-                masterVolume;
-
-        }
-
-
-        if(
-            typeof scaryMusic !==
-            "undefined"
-        ){
-
-            scaryMusic.volume =
-                originalVolumes.scaryMusic *
-                masterVolume;
-
-        }
-
+@media(max-width:700px){
+    #volumeControl{
+        bottom:145px;
     }
 
+    #volumeSlider{
+        width:75px;
+    }
+}
+</style>
 
-    /*
-        Следим за изменениями громкости
-        в твоём основном коде.
+<script>
 
-        Поэтому существующий код игры
-        можно вообще не трогать.
-    */
+const volumeSlider =
+    document.getElementById("volumeSlider");
 
-    let backgroundVolume =
-        originalVolumes.backgroundMusic;
+const volumeValue =
+    document.getElementById("volumeValue");
 
-    let scaryVolume =
-        originalVolumes.scaryMusic;
+volumeSlider.addEventListener("input", function(){
 
+    const volume =
+        Number(this.value) / 100;
 
-    Object.defineProperty(
-        backgroundMusic,
-        "volume",
-        {
+    backgroundMusic.volume =
+        0.65 * volume;
 
-            get:function(){
+    scaryMusic.volume =
+        1.0 * volume;
 
-                return backgroundVolume *
-                       masterVolume;
+    volumeValue.textContent =
+        this.value + "%";
 
-            },
+});
 
-            set:function(newVolume){
-
-                backgroundVolume =
-                    newVolume;
-
-            }
-
-        }
-    );
-
-
-    Object.defineProperty(
-        scaryMusic,
-        "volume",
-        {
-
-            get:function(){
-
-                return scaryVolume *
-                       masterVolume;
-
-            },
-
-            set:function(newVolume){
-
-                scaryVolume =
-                    newVolume;
-
-            }
-
-        }
-    );
-
-
-    /*
-        Ползунок
-    */
-
-    slider.addEventListener(
-        "input",
-        function(){
-
-            masterVolume =
-                Number(slider.value) / 100;
-
-
-            valueText.textContent =
-                slider.value + "%";
-
-
-            if(masterVolume === 0){
-
-                icon.textContent = "🔇";
-
-            }
-            else if(masterVolume < 0.5){
-
-                icon.textContent = "🔉";
-
-            }
-            else{
-
-                icon.textContent = "🔊";
-
-            }
-
-
-            /*
-                Применяем новую громкость
-                сразу же.
-            */
-
-            applyVolume();
-
-        }
-    );
-
-
-    /*
-        Начальное состояние
-    */
-
-    valueText.textContent =
-        slider.value + "%";
-
-    applyVolume();
-
-})();
 </script>
                 
 </body>
