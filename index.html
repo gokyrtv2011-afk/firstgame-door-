@@ -1355,11 +1355,7 @@ const scaryMusic =
 document.getElementById("scaryMusic");
 
 
-/* =========================================================
-                         ГРОМКОСТЬ
-========================================================= */
 
-setGameVolume();
 
 
 /* =========================================================
@@ -1513,7 +1509,7 @@ function playScaryMusic(){
         пока играет страшная.
     */
 
-    backgroundMusic.volume = 0.12 * masterVolume;
+    backgroundMusic.volume = 0.12;
 
     scaryMusic.volume = 1.0;
 
@@ -2018,7 +2014,7 @@ document
             "есть";
 
         showMessage(
-            "На столе лежит старый ключ. " +
+            "На столе лежит старый ключ от стула мамы Артема. " +
             "Ты забираешь его."
         );
 
@@ -2680,38 +2676,7 @@ updateTime();
 </style>
 
 <script>
-const volumeSlider =
-    document.getElementById("volumeSlider");
 
-const volumeValue =
-    document.getElementById("volumeValue");
-
-let masterVolume =
-    Number(volumeSlider.value) / 100;
-
-function setGameVolume(){
-
-    backgroundMusic.volume =
-        0.65 * masterVolume;
-
-    scaryMusic.volume =
-        1.0 * masterVolume;
-}
-
-volumeSlider.addEventListener("input", function(){
-
-    masterVolume =
-        Number(this.value) / 100;
-
-    volumeValue.textContent =
-        this.value + "%";
-
-    setGameVolume();
-
-});
-
-setGameVolume();
-</script>
                 
 </body>
 </html>
