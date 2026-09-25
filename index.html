@@ -1294,6 +1294,118 @@ width:min(350px,88vw);
 
 <script>
 "use strict";
+/* =========================================================
+ЗВУКИ ИГРЫ
+========================================================= */
+
+const gameSounds = {
+
+// Звонок в дверь — 1.5 секунды
+doorbell: {
+    file: "./doorbell.mp3",
+    duration: 1500,
+    volume: 0.7
+},
+// Стук в дверь — 1.5 секунды
+doorKnock: {
+    file: "./door_knock.mp3",
+    duration: 1500,
+    volume: 0.7
+},
+// Открывание двери — 3 секунды
+doorOpen: {
+    file: "./door_open.mp3",
+    duration: 3000,
+    volume: 0.8
+},
+// Использование глазка — 1 секунда
+peephole: {
+    file: "./peephole.mp3",
+    duration: 1000,
+    volume: 0.6
+},
+// Достаём телефон — 1 секунда
+phoneOpen: {
+    file: "./phone_open.mp3",
+    duration: 1000,
+    volume: 0.6
+},
+// Звонок по телефону — 2 секунды
+phoneCall: {
+    file: "./phone_call.mp3",
+    duration: 2000,
+    volume: 0.6
+},
+// Осмотр комнаты — 1.5 секунды
+search: {
+    file: "./search.mp3",
+    duration: 1500,
+    volume: 0.6
+},
+// Нашёл ключ — 1 секунда
+keyPickup: {
+    file: "./key_pickup.mp3",
+    duration: 1000,
+    volume: 0.7
+},
+// Нашёл записку — 1 секунда
+notePickup: {
+    file: "./note_pickup.mp3",
+    duration: 1000,
+    volume: 0.6
+},
+// Выключатель — 1 секунда
+lightSwitch: {
+    file: "./light_switch.mp3",
+    duration: 1000,
+    volume: 0.6
+},
+// Появление концовки — 4 секунды
+ending: {
+    file: "./ending.mp3",
+    duration: 4000,
+    volume: 0.8
+}
+
+};
+
+/* =========================================================
+ПРОИГРЫВАНИЕ ЗВУКА
+========================================================= */
+
+function playGameSound(soundName){
+
+const sound =
+    gameSounds[soundName];
+if(!sound){
+    console.log(
+        "Звук не найден:",
+        soundName
+    );
+    return;
+}
+const audio =
+    new Audio(sound.file);
+audio.volume =
+    sound.volume;
+audio.currentTime = 0;
+audio.play().catch(function(error){
+    console.log(
+        "Не удалось воспроизвести звук:",
+        sound.file,
+        error
+    );
+});
+/*
+    Останавливаем звук через
+    указанное количество миллисекунд.
+*/
+setTimeout(function(){
+    audio.pause();
+    audio.currentTime = 0;
+}, sound.duration);
+
+}
 
 /* =========================================================
                     СОСТОЯНИЕ ИГРЫ
