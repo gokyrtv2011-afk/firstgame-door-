@@ -1922,6 +1922,10 @@ document
 .getElementById("peepholeButton")
 .addEventListener("click",function(){
     playSound(peepholeSound);
+    setTimeout(function(){
+    peepholeSound.pause();
+    peepholeSound.currentTime = 0;
+}, 1500);
     if(state.gameOver){
         return;
     }
@@ -1991,6 +1995,10 @@ document
 .getElementById("phoneButton")
 .addEventListener("click",function(){
     playSound(phoneSound);
+    setTimeout(function(){
+    phoneSound.pause();
+    phoneSound.currentTime = 0;
+}, 1500);
     if(state.gameOver){
         return;
     }
@@ -2147,6 +2155,10 @@ document
 .getElementById("searchButton")
 .addEventListener("click",function(){
     playSound(searchSound);
+    setTimeout(function(){
+    searchSound.pause();
+    searchSound.currentTime = 0;
+}, 1500);
     if(state.gameOver){
         return;
     }
@@ -2171,6 +2183,10 @@ document
 
     else if(state.searches === 2){
         playSound(noteSound);
+        setTimeout(function(){
+    noteSound.pause();
+    noteSound.currentTime = 0;
+}, 1000);
 
         state.hasNote = true;
 
@@ -2288,6 +2304,10 @@ document
 .getElementById("openButton")
 .addEventListener("click",function(){
     playSound(doorOpenSound);
+    setTimeout(function(){
+    doorOpenSound.pause();
+    doorOpenSound.currentTime = 0;
+}, 3000);
 
     if(state.gameOver){
         return;
@@ -2377,6 +2397,12 @@ function disableGameButtons(){
 
 
 function showEnding(number, category, title, text){
+    playSound(endingSound);
+
+    setTimeout(function(){
+        endingSound.pause();
+        endingSound.currentTime = 0;
+    }, 4000);
 
     endingNumber.textContent =
         "КОНЦОВКА №" + number + " — " + category;
