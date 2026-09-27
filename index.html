@@ -2062,6 +2062,7 @@ document
 document
 .getElementById("friendButton")
 .addEventListener("click",function(){
+    playSound(callSound);
 
     if(state.gameOver){
         return;
@@ -2081,6 +2082,7 @@ document
 document
 .getElementById("policeButton")
 .addEventListener("click",function(){
+    playSound(callSound);
 
     if(state.gameOver){
         return;
@@ -2211,6 +2213,7 @@ document
     state.searches++;
 
     if(state.searches === 1){
+        playGameSound("keyPickup");
 
         state.hasKey = true;
 
@@ -2227,7 +2230,7 @@ document
     }
 
     else if(state.searches === 2){
-        playSound(noteSound);
+        playGameSound("notePickup");
         setTimeout(function(){
     noteSound.pause();
     noteSound.currentTime = 0;
