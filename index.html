@@ -1816,12 +1816,15 @@ function showMessage(text){
 
 const peepholeEvents = [
 
+    const peepholeEvents = [
+
     {
         text:
         "В глазке никого нет. " +
         "Но звонок продолжает звучать.",
         fear:3,
-        dangerous:false
+        dangerous:false,
+        image:"./peephole_empty.png"
     },
 
     {
@@ -1829,7 +1832,8 @@ const peepholeEvents = [
         "В коридоре стоит человек. " +
         "Он смотрит прямо на дверь.",
         fear:10,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_silhouette.png"
     },
 
     {
@@ -1837,7 +1841,8 @@ const peepholeEvents = [
         "Похоже на твоего соседа. " +
         "Но он совершенно неподвижен.",
         fear:8,
-        dangerous:false
+        dangerous:false,
+        image:"./peephole_silhouette.png"
     },
 
     {
@@ -1845,21 +1850,24 @@ const peepholeEvents = [
         "Коридор пуст. " +
         "Лампочка над дверью мигает.",
         fear:3,
-        dangerous:false
+        dangerous:false,
+        image:"./peephole_empty.png"
     },
 
     {
         text:
         "Вдали стоит тёмный силуэт.",
         fear:13,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_silhouette.png"
     },
 
     {
         text:
         "Перед дверью лежит маленькая записка.",
         fear:5,
-        dangerous:false
+        dangerous:false,
+        image:"./peephole_empty.png"
     },
 
     {
@@ -1867,7 +1875,8 @@ const peepholeEvents = [
         "Кто-то стоит прямо перед дверью. " +
         "Ты слышишь дыхание.",
         fear:15,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_silhouette.png"
     },
 
     {
@@ -1875,14 +1884,16 @@ const peepholeEvents = [
         "В глазке появляется лицо. " +
         "Через секунду оно исчезает.",
         fear:20,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_face.png"
     },
 
     {
         text:
         "Ты видишь человека, похожего на себя.",
         fear:25,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_face.png"
     },
 
     {
@@ -1890,21 +1901,24 @@ const peepholeEvents = [
         "Коридор пуст. " +
         "Но в отражении стекла кто-то стоит позади тебя.",
         fear:22,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_dark.png"
     },
 
     {
         text:
         "Кто-то медленно проходит мимо двери.",
         fear:12,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_passing.png"
     },
 
     {
         text:
         "Ты слышишь голос: «Я знаю, что ты дома».",
         fear:18,
-        dangerous:true
+        dangerous:true,
+        image:"./peephole_dark.png"
     }
 
 ];
@@ -1936,6 +1950,8 @@ document
 
     peepholeView.textContent =
         event.text;
+    peepholeView.style.backgroundImage =
+    "url('" + event.image + "')";
 
     peepholeOverlay.style.display =
         "flex";
