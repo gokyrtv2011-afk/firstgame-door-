@@ -2390,6 +2390,8 @@ document
     if(state.gameOver){
         return;
     }
+    door.classList.add("opening");
+    setTimeout(function(){
 
     if(
         state.hasKey &&
@@ -2448,6 +2450,7 @@ document
     }
 
     endingDoor();
+    },1200);
 
 });
 
