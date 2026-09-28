@@ -195,6 +195,34 @@ button{
 
     transition:.3s;
 }
+    #doorOpening{
+    position:absolute;
+    inset:0;
+
+    background:#000;
+
+    opacity:0;
+
+    z-index:-1;
+
+    transition:opacity 1.2s ease;
+}
+
+#door.opening{
+    transform:
+        translateX(-50%)
+        perspective(800px)
+        rotateY(-18deg);
+
+    transform-origin:left center;
+
+    transition:
+        transform 1.2s cubic-bezier(.22,.61,.36,1);
+}
+
+#door.opening #doorOpening{
+    opacity:1;
+}
 
 #door::before{
     content:"";
@@ -1092,10 +1120,12 @@ width:min(350px,88vw);
 
     <div id="door">
 
-        <div id="peepholeDot"></div>
-        <div id="handle"></div>
+    <div id="doorOpening"></div>
 
-    </div>
+    <div id="peepholeDot"></div>
+    <div id="handle"></div>
+
+</div>
 
 
     <div id="topBar">
