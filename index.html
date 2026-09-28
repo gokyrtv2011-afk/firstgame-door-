@@ -195,44 +195,29 @@ button{
 
     transition:.3s;
 }
-    #doorOpening{
+    #doorway{
     position:absolute;
-    inset:0;
-
+    width:100%;
+    height:100%;
     background:#000;
-
-    opacity:0;
-
-    z-index:-1;
-
-    transition:opacity 1.2s ease;
+    z-index:1;
 }
 
-#door.opening{
+#door{
+    z-index:2;
+}
+    #door.opening{
     transform:
         translateX(-50%)
         perspective(800px)
-        rotateY(-18deg);
+        rotateY(18deg);
 
     transform-origin:left center;
 
     transition:
         transform 1.2s cubic-bezier(.22,.61,.36,1);
-}
 
-#door.opening #doorOpening{
-    opacity:1;
-}
-
-#door::before{
-    content:"";
-
-    position:absolute;
-    inset:25px;
-
-    border:2px solid rgba(0,0,0,.45);
-    box-shadow:
-        inset 0 0 25px rgba(0,0,0,.6);
+    background-color:transparent;
 }
 
 #door::after{
@@ -1113,6 +1098,7 @@ width:min(350px,88vw);
 
     <div class="wall"></div>
     <div class="floor"></div>
+    <div id="doorway"></div>
 
     <div id="table"></div>
     <div id="lamp"></div>
@@ -1120,7 +1106,6 @@ width:min(350px,88vw);
 
     <div id="door">
 
-    <div id="doorOpening"></div>
 
     <div id="peepholeDot"></div>
     <div id="handle"></div>
